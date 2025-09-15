@@ -21,11 +21,6 @@ This project is intended as a backend showcase and learning exercise, not for pr
 - Authentication: JWT
 - Deployment: Docker
 
-## Database Schema (MVP)
-- **users**: id, username, password_hash, email, created_at  
-- **products**: id, name, price, description, created_at  
-- **orders**: id, user_id, product_id, amount, status, created_at, updated_at  
-
 ## Project Structure
 ```bash
 mock-store-payment-backend/
