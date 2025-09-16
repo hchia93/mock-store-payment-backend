@@ -23,27 +23,27 @@ echo.
 
 echo Checking for required files:
 if exist "migrations\init.sql" (
-    echo ✓ migrations\init.sql found
+    echo migrations\init.sql found
 ) else (
-    echo ✗ migrations\init.sql NOT FOUND
+    echo migrations\init.sql NOT FOUND
 )
 
 if exist "src\db\data\product.sql" (
-    echo ✓ src\db\data\product.sql found
+    echo src\db\data\product.sql found
 ) else (
-    echo ✗ src\db\data\product.sql NOT FOUND
+    echo src\db\data\product.sql NOT FOUND
 )
 
 if exist "src\db\data\account.sql" (
-    echo ✓ src\db\data\account.sql found
+    echo src\db\data\account.sql found
 ) else (
-    echo ✗ src\db\data\account.sql NOT FOUND
+    echo src\db\data\account.sql NOT FOUND
 )
 
 if exist "src\db\data\order.sql" (
-    echo ✓ src\db\data\order.sql found
+    echo src\db\data\order.sql found
 ) else (
-    echo ✗ src\db\data\order.sql NOT FOUND
+    echo src\db\data\order.sql NOT FOUND
 )
 
 echo.

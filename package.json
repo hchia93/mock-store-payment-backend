@@ -1,0 +1,31 @@
+{
+  "name": "mock-store-payment-backend",
+  "version": "1.0.0",
+  "description": "A backend service for a mock store and payment system.  \r It demonstrates common backend patterns such as authentication, product catalog, order management, and integration with a mock payment service.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/api/index.js",
+    "dev": "nodemon src/api/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hchia93/mock-store-payment-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/hchia93/mock-store-payment-backend/issues"
+  },
+  "homepage": "https://github.com/hchia93/mock-store-payment-backend#readme",
+  "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "prisma": "^6.16.2"
+  }
+}

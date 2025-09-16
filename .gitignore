@@ -87,3 +87,5 @@ Thumbs.db
 # VSCode settings (optional, if you don't want to share workspace settings)
 #.vscode/
 
+README_draft.md
+/src/generated/prisma
