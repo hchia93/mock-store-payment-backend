@@ -16,24 +16,14 @@ This project is intended as a backend showcase and learning exercise, not for pr
 **Common challenges**: Handle typical backend concerns such as account management, schema evolution, data initialization/reset, and pricing logic.
 
 ## Feature Scope
-
-1. User Management
-    - Create a new account
-    - Log in
-    - Delete own account
-2. Product Query
-    - Query individual products via API endpoint
-    - Retrieve product prices
-3. Shopping Cart
-    - View cart contents
-    - Add items to the cart
-    - Delete items in the card
-4. Checkout & Payment
-    - Checkout selected items from the cart
-    - Process payment through a mock payment API
-5. Transactions & Invoices
-    - Record user payments
-    - Generate invoices (e.g., as PDF)
+| Feature | Scope |
+|--|--|
+| User Management | <ul><li>Create a new account</li><li>Log in</li><li>Delete own account</li></ul> |
+| Product Query | <ul><li>Query individual products via API endpoint</li><li>Retrieve product prices</li></ul> |
+| Shopping Cart | <ul><li>View cart contents</li><li>Add items to the cart</li><li>Delete items in the card</li></ul> |
+| Checkout & Payment | <ul><li>Checkout selected items from the cart</li><li>Process payment through a mock payment API</li></ul> |
+| Transactions & Invoices | <ul><li>Record user payments</li><li>Generate invoices (e.g., as PDF)</li></ul> |
+    
 
 Do take note that this project focus on endpoint API, not frontend capabilities.
 
