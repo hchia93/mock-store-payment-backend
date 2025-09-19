@@ -1,5 +1,5 @@
 -- Insert sample products : 100 Stardew Valley–like products
-INSERT INTO products (id, name, description, category) VALUES
+INSERT INTO product (id, name, description, category) VALUES
 (1, 'Turnip', 'A crisp root vegetable', 'Vegetable'),
 (2, 'Carrot', 'A sweet crunchy vegetable', 'Vegetable'),
 (3, 'Potato', 'Staple crop with many uses', 'Vegetable'),

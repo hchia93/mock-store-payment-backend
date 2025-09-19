@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -8,38 +7,70 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model bundle_items {
-  bundle_id  Int
-  product_id Int
-  bundles    bundles  @relation(fields: [bundle_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  products   products @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@id([bundle_id, product_id])
-}
-
 model bundle_price_version {
-  id         Int       @id @default(autoincrement())
+  id         Int        @id @default(autoincrement())
   bundle_id  Int
   version    Int
-  price      Decimal   @db.Decimal(10, 2)
-  created_at DateTime? @default(now()) @db.Timestamp(6)
-  bundles    bundles   @relation(fields: [bundle_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  orders     orders[]
+  price      Decimal    @db.Decimal(10, 2)
+  created_at DateTime?  @default(now()) @db.Timestamp(6)
+  bundles    bundle     @relation(fields: [bundle_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  purchase   purchase[]
 
   @@unique([bundle_id, version])
 }
 
-model bundles {
+model product_price_version {
+  id         Int        @id @default(autoincrement())
+  product_id Int
+  version    Int
+  price      Decimal    @db.Decimal(10, 2)
+  created_at DateTime?  @default(now()) @db.Timestamp(6)
+  products   product    @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  purchase   purchase[]
+
+  @@unique([product_id, version])
+}
+
+model account {
+  id            Int        @id @default(autoincrement())
+  username      String     @unique @db.VarChar(50)
+  password_hash String
+  email         String     @unique @db.VarChar(100)
+  created_at    DateTime?  @default(now()) @db.Timestamp(6)
+  purchase      purchase[]
+}
+
+model bundle {
   id                   Int                    @id @default(autoincrement())
   name                 String                 @db.VarChar(100)
   description          String?
   created_at           DateTime?              @default(now()) @db.Timestamp(6)
-  bundle_items         bundle_items[]
+  bundle_item          bundle_item[]
   bundle_price_version bundle_price_version[]
-  orders               orders[]
+  purchase             purchase[]
 }
 
-model orders {
+model bundle_item {
+  bundle_id  Int
+  product_id Int
+  bundle     bundle  @relation(fields: [bundle_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  product    product @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([bundle_id, product_id])
+}
+
+model product {
+  id                    Int                     @id @default(autoincrement())
+  name                  String                  @db.VarChar(100)
+  description           String?
+  category              String?                 @db.VarChar(50)
+  created_at            DateTime?               @default(now()) @db.Timestamp(6)
+  bundle_item           bundle_item[]
+  product_price_version product_price_version[]
+  purchase              purchase[]
+}
+
+model purchase {
   id                    Int                    @id @default(autoincrement())
   user_id               Int
   is_bundle             Boolean?               @default(false)
@@ -48,44 +79,12 @@ model orders {
   bundle_id             Int?
   bundle_version        Int?
   amount                Decimal                @db.Decimal(10, 2)
-  order_status          String?                @default("pending") @db.VarChar(20)
+  purchase_status       String?                @default("pending") @db.VarChar(20)
   created_at            DateTime?              @default(now()) @db.Timestamp(6)
   updated_at            DateTime?              @default(now()) @db.Timestamp(6)
   bundle_price_version  bundle_price_version?  @relation(fields: [bundle_id, bundle_version], references: [bundle_id, version], onDelete: NoAction, onUpdate: NoAction, map: "fk_bundle_version")
   product_price_version product_price_version? @relation(fields: [product_id, product_version], references: [product_id, version], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_version")
-  bundles               bundles?               @relation(fields: [bundle_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  products              products?              @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  users                 users                  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model product_price_version {
-  id         Int       @id @default(autoincrement())
-  product_id Int
-  version    Int
-  price      Decimal   @db.Decimal(10, 2)
-  created_at DateTime? @default(now()) @db.Timestamp(6)
-  orders     orders[]
-  products   products  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@unique([product_id, version])
-}
-
-model products {
-  id                    Int                     @id @default(autoincrement())
-  name                  String                  @db.VarChar(100)
-  description           String?
-  category              String?                 @db.VarChar(50)
-  created_at            DateTime?               @default(now()) @db.Timestamp(6)
-  bundle_items          bundle_items[]
-  orders                orders[]
-  product_price_version product_price_version[]
-}
-
-model users {
-  id            Int       @id @default(autoincrement())
-  username      String    @unique @db.VarChar(50)
-  password_hash String
-  email         String    @unique @db.VarChar(100)
-  created_at    DateTime? @default(now()) @db.Timestamp(6)
-  orders        orders[]
+  bundle                bundle?                @relation(fields: [bundle_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  product               product?               @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  account               account                @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

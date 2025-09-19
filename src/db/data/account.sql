@@ -1,5 +1,5 @@
 -- Demo data: 10 users
-INSERT INTO users (id, username, password_hash, email, created_at) VALUES
+INSERT INTO account (id, username, password_hash, email, created_at) VALUES
 (1, 'sunny_farm', 'hash_pw_123', 'sunny_farm@example.com', NOW()),
 (2, 'blueberry_lover', 'hash_pw_234', 'blueberry_lover@example.com', NOW()),
 (3, 'ironminer', 'hash_pw_345', 'ironminer@example.com', NOW()),

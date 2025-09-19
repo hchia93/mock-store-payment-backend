@@ -1,7 +1,7 @@
 -- Schema for mock_store_db (run with -d mock_store_db)
 
--- Users
-CREATE TABLE IF NOT EXISTS users (
+-- Accounts
+CREATE TABLE IF NOT EXISTS account (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Products
-CREATE TABLE IF NOT EXISTS products (
+CREATE TABLE IF NOT EXISTS product (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
@@ -21,49 +21,49 @@ CREATE TABLE IF NOT EXISTS products (
 -- Product versions
 CREATE TABLE IF NOT EXISTS product_price_version (
     id SERIAL PRIMARY KEY,
-    product_id INT NOT NULL REFERENCES products(id),
+    product_id INT NOT NULL REFERENCES product(id),
     version INT NOT NULL,
     price DECIMAL(10,2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(product_id, version)
 );
 
-CREATE TABLE IF NOT EXISTS bundles (
+CREATE TABLE IF NOT EXISTS bundle (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS bundle_items (
-    bundle_id INT NOT NULL REFERENCES bundles(id) ON DELETE CASCADE,
-    product_id INT NOT NULL REFERENCES products(id),
+CREATE TABLE IF NOT EXISTS bundle_item (
+    bundle_id INT NOT NULL REFERENCES bundle(id) ON DELETE CASCADE,
+    product_id INT NOT NULL REFERENCES product(id),
     PRIMARY KEY (bundle_id, product_id)
 );
 
 CREATE TABLE IF NOT EXISTS bundle_price_version (
     id SERIAL PRIMARY KEY,
-    bundle_id INT NOT NULL REFERENCES bundles(id) ON DELETE CASCADE,
+    bundle_id INT NOT NULL REFERENCES bundle(id) ON DELETE CASCADE,
     version INT NOT NULL,
     price DECIMAL(10,2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (bundle_id, version)
 );
 
-CREATE TABLE IF NOT EXISTS orders (
+CREATE TABLE IF NOT EXISTS purchase (
     id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL REFERENCES users(id),
+    user_id INT NOT NULL REFERENCES account(id),
     is_bundle BOOLEAN DEFAULT FALSE,
 
-    product_id INT REFERENCES products(id),
+    product_id INT REFERENCES product(id),
     product_version INT,
 
-    bundle_id INT REFERENCES bundles(id),
+    bundle_id INT REFERENCES bundle(id),
     bundle_version INT,
 
     amount DECIMAL(10,2) NOT NULL,
 
-    order_status VARCHAR(20) DEFAULT 'pending',
+    purchase_status VARCHAR(20) DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 

@@ -1,4 +1,4 @@
-INSERT INTO bundles (id, name, description) VALUES
+INSERT INTO bundle (id, name, description) VALUES
 (1, 'Farmer Starter Pack', 'Essential crops for beginners'),
 (2, 'Fruit Basket', 'A sweet collection of fruits'),
 (3, 'Seafood Feast', 'Fresh catches from the water'),
@@ -10,7 +10,7 @@ INSERT INTO bundles (id, name, description) VALUES
 (9, 'Flower Bouquet', 'A bundle of beautiful flowers'),
 (10, 'Tropical Mix', 'Exotic fruits from distant lands');
 
-INSERT INTO bundle_items (bundle_id, product_id) VALUES
+INSERT INTO bundle_item (bundle_id, product_id) VALUES
 -- 1: Farmer Starter Pack
 (1, 1), (1, 2), (1, 3), (1, 16), (1, 17),
 -- 2: Fruit Basket
