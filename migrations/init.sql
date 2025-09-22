@@ -3,7 +3,8 @@
 -- Accounts
 CREATE TABLE IF NOT EXISTS account (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
+    handle_name VARCHAR(50) UNIQUE NOT NULL,
+    display_name VARCHAR(50) NOT NULL,
     password_hash TEXT NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

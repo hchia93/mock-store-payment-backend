@@ -16,6 +16,7 @@ This project is intended as a backend showcase and learning exercise, not for pr
 **Common challenges**: Handle typical backend concerns such as account management, schema evolution, data initialization/reset, and pricing logic.
 
 ## Feature Scope
+
 | Feature | Scope |
 |--|--|
 | User Management | <ul><li>Create a new account</li><li>Log in</li><li>Delete own account</li></ul> |
@@ -23,7 +24,6 @@ This project is intended as a backend showcase and learning exercise, not for pr
 | Shopping Cart | <ul><li>View cart contents</li><li>Add items to the cart</li><li>Delete items in the card</li></ul> |
 | Checkout & Payment | <ul><li>Checkout selected items from the cart</li><li>Process payment through a mock payment API</li></ul> |
 | Transactions & Invoices | <ul><li>Record user payments</li><li>Generate invoices (e.g., as PDF)</li></ul> |
-    
 
 Do take note that this project focus on endpoint API, not frontend capabilities.
 

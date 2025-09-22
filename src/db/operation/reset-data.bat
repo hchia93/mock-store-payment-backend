@@ -22,7 +22,7 @@ echo Step 2: Reloading sample data...
 %PSQL_CMD% -d %DB_NAME% -f src\db\data\bundle.sql
 %PSQL_CMD% -d %DB_NAME% -f src\db\data\price.sql
 %PSQL_CMD% -d %DB_NAME% -f src\db\data\account.sql
-%PSQL_CMD% -d %DB_NAME% -f src\db\data\order.sql
+%PSQL_CMD% -d %DB_NAME% -f src\db\data\purchase.sql
 if errorlevel 1 (
     echo FAILED: Could not load sample data
     pause

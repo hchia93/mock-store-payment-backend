@@ -1,38 +1,55 @@
-import prisma from "../../api/prisma.js"
+import { requireBody } from '../../api/middlewares/validate.js';
+import { createAccount, deleteAccount, updateAccountPassword } from '../../api/services/account.service.js';
 
 import express from "express";
 const router = express.Router();
 
-router.post('/', async(req, res) => 
+/**
+ * POST /accounts
+ * body: { email, password, displayName? }
+ */
+router.post('/', requireBody(['email', 'password, handle_name']), async (req, res) => 
 {
-    const { username, password, email } = req.body;
-    try {
-        const account = await prisma.account.create({
-            data: { 
-                username,
-                password_hash: password, // bcrypt later.
-                email,
-            },
-        });
-
-        res.status(201).json(account);
+    try
+    {
+        const acc = await createAccount(req.body);
+        res.status(201).json(acc);
     }
     catch (e)
     {
-        res.status(400).json({error : e.message });
+        res.status(e.status || 500).json({ error: e.message, details: e.details });
+
     }
 });
 
-router.get('/', async(req, res)=> {
-    const accounts = await prisma.account.findMany();
-    res.json(accounts);
+router.delete('/:id', async (req, res) =>
+{
+    try
+    {
+        await deleteAccount(req.params.id);
+        res.status(204).end();
+    }
+    catch (e)
+    {
+        res.status(e.status || 500).json({error: e.message});
+    }
 });
 
-router.get('/:id', async(req, res) => {
-    const id = parseInt(req.params.id, 10);
-    const accounts = await prisma.account.findUnique({ where: {id} });
-    if (!accounts) return res.status(404).json({ error: 'User account not found'});
-    res.json(accounts);
+/**
+ * PATCH /accounts/:id/password
+ * body: { currentPassword, newPassword }
+ */
+router.patch('/:id/password', requireBody(['currentPassword', 'newPassword']), async (req, res) => 
+{
+    try
+    {
+        await updateAccountPassword(req.params.id, req.body.currentPassword, req.body.newPassword);
+        res.status(204).end();
+    }
+    catch (e)
+    {
+        res.status(e.status || 500).json({ error: e.message, details: e.details });
+    }
 });
 
 export default router;
