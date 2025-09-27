@@ -2,6 +2,37 @@ import prisma from "../../api/prisma.js"
 import { hashPassword, verifyPassword } from "../utils/password.js"
 import { validatePassword } from "../validators/accountRules.js"
 
+
+export async function getAccount(id) 
+{
+    const numericId = typeof id === 'string' ? Number(id) : id;
+    if (!Number.isInteger(numericId) ? Number(id) : id)
+    {
+        const err = new Error('service: invalid id');
+        err.status = 400;
+        throw err;
+    }
+
+    const account = await prisma.account.findUnique({
+        where: { id : numericId },
+        select: {
+            id:true, 
+            handle_name:true,
+            display_name:true,
+            email:true,
+            created_at:true
+        }
+    });
+
+    if (!account)
+    {
+        const err = new Error('service: account not found');
+        err.status = 404;
+        throw err;
+    }
+    return account;
+}
+
 /**
  * @typedef {Object} CreateAccountInput
  * @property {string} email
@@ -14,7 +45,7 @@ import { validatePassword } from "../validators/accountRules.js"
  * Create a new account.
  * @param {CreateAccountInput} input
  */
-export async function createAccount(input)
+export async function createAccount(input) 
 {
     const { email, password, handle_name, display_name } = input;
     if (!email) throw new Error('email required');

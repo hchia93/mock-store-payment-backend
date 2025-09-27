@@ -1,4 +1,4 @@
-import bycrypt from 'bcrypt'; // npm i bcrypt
+import bycrypt from 'bcryptjs'
 
 const DEFAULT_SALT_ROUNDS = Number(process.env.BCRYPT_SALT_ROUNDS || 12);
 

@@ -1,8 +1,35 @@
 import { requireBody } from '../../api/middlewares/validate.js';
-import { createAccount, deleteAccount, updateAccountPassword } from '../../api/services/account.service.js';
+import { getAccount, createAccount, deleteAccount, updateAccountPassword } from '../../api/services/account.service.js';
 
 import express from "express";
 const router = express.Router();
+
+router.get('/:id', async (req, res) => {
+    try{
+        const account = await getAccount(req.params.id);
+        res.status(200).json(account);
+    }
+    catch(e){
+        res.status(e.status || 404).json({ error: e.message || 'Account not found' });
+    }
+});
+
+router.get('/:id/view', async (req, res) => {
+    try{
+        const account = await getAccount(req.params.id);
+        res.type('html').send(`
+            <h1>Account #${acc.id}</h1>
+            <ul>
+                <li>handle_name: ${acc.handle_name}</li>
+                <li>display_name: ${acc.display_name}</li>
+                <li>email: ${acc.email}</li>
+                <li>created_at: ${new Date(acc.created_at).toISOString()}</li>
+            </ul>
+        `);
+    } catch (e) {
+        res.status(e.status || 404).send(`<p>${e.message || 'Account not found'}</p>`);
+    }
+});
 
 /**
  * POST /accounts
