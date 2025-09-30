@@ -1,4 +1,4 @@
-import bycrypt from 'bcryptjs'
+import bcrypt from 'bcryptjs'
 
 const DEFAULT_SALT_ROUNDS = Number(process.env.BCRYPT_SALT_ROUNDS || 12);
 
@@ -20,5 +20,5 @@ export async function hashPassword(password)
  */
 export async function verifyPassword(password, hash)
 {
-    return bycrypt.compare(password.hash);
+    return bcrypt.compare(password.hash);
 }

@@ -31,3 +31,5 @@ INSERT INTO bundle_item (bundle_id, product_id) VALUES
 (9, 56), (9, 57), (9, 58), (9, 59), (9, 60),
 -- 10: Tropical Mix
 (10, 73), (10, 76), (10, 77), (10, 78), (10, 79);
+
+SELECT setval('bundle_id_seq', (SELECT COALESCE(MAX(id), 0)+1 FROM bundle));

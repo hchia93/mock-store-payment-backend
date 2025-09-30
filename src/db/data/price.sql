@@ -119,3 +119,8 @@ INSERT INTO bundle_price_version (bundle_id, version, price) VALUES
 (8, 1, 715.00),  -- Luxury Feast (Diamond+Lobster+Sturgeon+Pomegranate+Starfruit)
 (9, 1, 240.00),  -- Flower Bouquet (Sunflower+Tulip+Rose+Orchid+Daffodil)
 (10, 1, 385.00); -- Tropical Mix (Mango+Papaya+Guava+Lychee+Dragonfruit)
+
+SELECT setval('product_price_version_id_seq',
+              (SELECT COALESCE(MAX(id),0)+1 FROM product_price_version));
+SELECT setval('bundle_price_version_id_seq',
+              (SELECT COALESCE(MAX(id),0)+1 FROM bundle_price_version));

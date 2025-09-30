@@ -11,7 +11,8 @@ export function requireBody(fields)
         if (missing.length)
         {
             return res.status(400).json({ error: `Missing: ${missing.join(', ')}` });
-            next();
         }
+
+        next();
     };
 }

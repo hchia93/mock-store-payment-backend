@@ -22,5 +22,5 @@ export function validatePassword(password)
     {
         errors.push('password must be 8-64 char and include lower/upper/digit/symbols');
     }
-    return { ok: errors.length() === 0, errors };
+    return { ok: errors.length === 0, errors };
 }

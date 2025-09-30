@@ -100,3 +100,7 @@ INSERT INTO product (id, name, description, category) VALUES
 (98, 'Hazelnut', 'Edible wild nut', 'Forage'),
 (99, 'Blackberry', 'Wild berry fruit', 'Forage'),
 (100, 'Spice Berry', 'Wild aromatic berry', 'Forage');
+
+
+SELECT setval('product_id_seq',
+              (SELECT COALESCE(MAX(id),0)+1 FROM product));
