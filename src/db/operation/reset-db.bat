@@ -25,7 +25,10 @@ if errorlevel 1 (
 )
 
 echo Step 2: Creating schema...
-%PSQL_CMD% -d %DB_NAME% -f migrations/init.sql
+%PSQL_CMD% -d %DB_NAME% -f migrations\schema\account.sql
+%PSQL_CMD% -d %DB_NAME% -f migrations\schema\product.sql
+%PSQL_CMD% -d %DB_NAME% -f migrations\schema\price.sql
+%PSQL_CMD% -d %DB_NAME% -f migrations\schema\purchase.sql
 if errorlevel 1 (
     echo FAILED: Could not create schema
     pause
@@ -33,11 +36,10 @@ if errorlevel 1 (
 )
 
 echo Step 3: Loading sample data...
-%PSQL_CMD% -d %DB_NAME% -f src\db\data\product.sql
-%PSQL_CMD% -d %DB_NAME% -f src\db\data\bundle.sql
-%PSQL_CMD% -d %DB_NAME% -f src\db\data\price.sql
-%PSQL_CMD% -d %DB_NAME% -f src\db\data\account.sql
-%PSQL_CMD% -d %DB_NAME% -f src\db\data\purchase.sql
+%PSQL_CMD% -d %DB_NAME% -f src\db\data\account-data.sql
+%PSQL_CMD% -d %DB_NAME% -f src\db\data\product-data.sql
+%PSQL_CMD% -d %DB_NAME% -f src\db\data\price-data.sql
+%PSQL_CMD% -d %DB_NAME% -f src\db\data\purchase-data.sql
 if errorlevel 1 (
     echo FAILED: Could not load sample data
     pause

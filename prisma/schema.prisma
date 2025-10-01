@@ -73,7 +73,7 @@ model product {
 
 model purchase {
   id                    Int                    @id @default(autoincrement())
-  user_id               Int
+  account_id            Int
   is_bundle             Boolean?               @default(false)
   product_id            Int?
   product_version       Int?
@@ -85,7 +85,7 @@ model purchase {
   updated_at            DateTime?              @default(now()) @db.Timestamp(6)
   bundle_price_version  bundle_price_version?  @relation(fields: [bundle_id, bundle_version], references: [bundle_id, version], onDelete: NoAction, onUpdate: NoAction, map: "fk_bundle_version")
   product_price_version product_price_version? @relation(fields: [product_id, product_version], references: [product_id, version], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_version")
+  account               account                @relation(fields: [account_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   bundle                bundle?                @relation(fields: [bundle_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   product               product?               @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  account               account                @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

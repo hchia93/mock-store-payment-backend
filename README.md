@@ -1,21 +1,16 @@
 # mock-store-payment-backend
 
-A backend service for a mock store and payment system.  
-It demonstrates common backend patterns such as authentication, product catalog, order management, and integration with a mock payment service.  
+![WIP](https://img.shields.io/badge/Work_in_Progress-On_Going-orange?logo=github&logoColor=white)
+![WIP](https://img.shields.io/badge/PlaceHolder-CI/CD_Status-blue?logo=github&logoColor=white)
 
-This project is intended as a backend showcase and learning exercise, not for production use.
+A learning-oriented backend service inspired by game store platforms.
+It explores common backend patterns including authentication, product catalog, cart and order management, and integration with a mock payment service.
 
-![WIP](https://img.shields.io/badge/Work_in_Progress-ongoing-orange?logo=github&logoColor=white)
+This project serves as a showcase and practice ground for backend development concepts, not intended for production use.
 
-## Purpose
+Frontend is not within the scope of this project.
 
-**Learning goal**: Explore backend endpoint development with Node.js + Express, and practice connecting APIs to a database through an ORM.
-
-**Business simulation**: Mimic the data flow of an e-commerce platform or in-game store (account, product, bundle, purchase, payment, price versioning, etc).
-
-**Common challenges**: Handle typical backend concerns such as account management, schema evolution, data initialization/reset, and pricing logic.
-
-## Feature Scope
+## ✨ Features
 
 | Feature | Scope |
 |--|--|
@@ -25,7 +20,22 @@ This project is intended as a backend showcase and learning exercise, not for pr
 | Checkout & Payment | <ul><li>Checkout selected items from the cart</li><li>Process payment through a mock payment API</li></ul> |
 | Transactions & Invoices | <ul><li>Record user payments</li><li>Generate invoices (e.g., as PDF)</li></ul> |
 
-Do take note that this project focus on endpoint API, not frontend capabilities.
+## pending-demo
+![WIP](https://img.shields.io/badge/PlaceHolder-Demo-blue?logo=github&logoColor=white)
+
+## Project Structure
+
+```bash
+mock-store-payment-backend/
+├── prisma/                 # Prisma schema & migrations
+├── scripts/                # Windows batch scripts (reset-db, reset-data, etc.)
+├── src/
+│   └── api/                # Express API endpoints
+├── .env                    # Example environment variables. Disensitized version config is pushed in this repo.
+├── .pgpass                 # Local PostgreSQL password config
+├── package.json
+└── README.md
+```
 
 ## Tech Stack
 
@@ -34,6 +44,8 @@ Do take note that this project focus on endpoint API, not frontend capabilities.
 - API Framework: `Node.js` + `Express`
 - Configuration: `dotenv`, `pgpass`
 - Automation: Windows batch scripts for database reset/init/load
+
+
 
 ```mermaid
 flowchart LR 
@@ -62,16 +74,96 @@ flowchart LR
     CLIENT -- run SQL --> DB
 ```
 
-## Project Structure
+> Disclaimer: `Node.js` was chosen over `C++` as it is more commonly used for backend services in Singapore. The project serves to align with prevalent industry practices and to build familiarity with widely adopted backend methodologies.
 
-```bash
-mock-store-payment-backend/
-├── prisma/                 # Prisma schema & migrations
-├── scripts/                # Windows batch scripts (reset-db, reset-data, etc.)
-├── src/
-│   └── api/                # Express API endpoints
-├── .env                    # Example environment variables. Disensitized version config is pushed in this repo.
-├── .pgpass                 # Local PostgreSQL password config
-├── package.json
-└── README.md
+## Database ERD
+
+```mermaid
+erDiagram
+
+    account {
+        int id PK
+        string handle_name
+        string display_name
+        string password_hash
+        string email
+        timestamp created_at
+    }
+
+    product {
+        int id PK
+        string name
+        string description
+        string category
+        timestamp created_at
+    }
+
+    product_price_version {
+        int id PK
+        int product_id FK
+        int version
+        decimal price
+        timestamp created_at
+    }
+
+    bundle {
+        int id PK
+        string name
+        string description
+        timestamp created_at
+    }
+
+    bundle_item {
+        int bundle_id FK
+        int product_id FK
+    }
+
+    bundle_price_version {
+        int id PK
+        int bundle_id FK
+        int version
+        decimal price
+        timestamp created_at
+    }
+
+    cart {
+        int id PK
+        int account_id FK
+        boolean is_bundle
+        int product_id FK
+        int product_version
+        int bundle_id FK
+        int bundle_version
+        int quantity
+        decimal price_snapshot
+        uuid group_id
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    purchase {
+        int id PK
+        int account_id FK
+        boolean is_bundle
+        int product_id FK
+        int product_version
+        int bundle_id FK
+        int bundle_version
+        decimal amount
+        string purchase_status
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    %% Relationships
+    account ||--o{ cart : "has"
+    account ||--o{ purchase : "makes"
+    product ||--o{ product_price_version : "has versions"
+    bundle ||--o{ bundle_item : "contains"
+    product ||--o{ bundle_item : "part of"
+    bundle ||--o{ bundle_price_version : "has versions"
+    product ||--o{ cart : "in"
+    bundle ||--o{ cart : "in"
+    product ||--o{ purchase : "in"
+    bundle ||--o{ purchase : "in"
 ```

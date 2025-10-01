@@ -11,5 +11,4 @@ INSERT INTO account (id, handle_name, display_name, password_hash, email, create
 (9, 'berryhunter', 'Berry Not Good','hash_pw_901', 'berryhunter@example.com', NOW()),
 (10, 'mushroom_boy', 'Mushy','hash_pw_012', 'mushroom_boy@example.com', NOW());
 
-SELECT setval('account_id_seq',
-              (SELECT COALESCE(MAX(id),0)+1 FROM account));
+SELECT setval('account_id_seq', (SELECT COALESCE(MAX(id),0)+1 FROM account));
