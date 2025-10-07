@@ -1,4 +1,4 @@
-import userRouter from "./routers/account.js";
+import accountRouter from "./routers/account.js";
 import productRouter from "./routers/product.js"
 
 import dotenv from "dotenv";
@@ -8,7 +8,7 @@ import express from "express";
 const app = express();
 
 app.use(express.json());
-app.use('/users', userRouter);
+app.use('/accounts', accountRouter);
 app.use('/products', productRouter);
 
 app.listen(process.env.PORT || 3000, () => 

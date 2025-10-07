@@ -1,44 +1,8 @@
 import prisma from "../../api/prisma.js"
 import { hashPassword, verifyPassword } from "../utils/password.js"
-import { validatePassword } from "../validators/accountRules.js"
+import { validatePassword } from "../validators/passwordRules.js"
 
-export async function getAccount(id)
-{
-    // Convert to number if string
-    const numericId = (typeof id === 'string') ? Number(id) : id;
-
-    // Reject NaN / non-integer / <= 0
-    if (!Number.isInteger(numericId) || numericId <= 0)
-    {
-        const err = new Error('service: invalid id');
-        err.status = 400;
-        throw err;
-    }
-
-    const account = await prisma.account.findUnique(
-    {
-        where: { id: numericId },
-        select:
-        {
-        id: true,
-        handle_name: true,
-        display_name: true,
-        email: true,
-        created_at: true
-        }
-    });
-
-    if (!account)
-    {
-        const err = new Error('service: account not found');
-        err.status = 404;
-        throw err;
-    }
-
-    return account;
-}
-
-export async function getAccountByHandle(handle)
+export async function getAccount(handle)
 {
     if (typeof handle !== 'string' || handle.length === 0 || handle.length > 50)
     {
@@ -137,15 +101,12 @@ export async function createAccount(input)
  * Hard delete an account by id.
  * @param {string|number} id
  */
-export async function deleteAccount(id)
+export async function deleteAccount(handle)
 {
-    const numericId = typeof id === 'string' ? Number(id) : id;
-    console.log(">>> deleteAccount() called with id:", id, "parsed:", numericId);
-
     try
     {
         const result = await prisma.account.delete({
-            where: { id: numericId }
+            where: { handle_name: handle.trim() }
         });
         console.log(">>> Prisma delete result:", result);
         return result;
@@ -162,11 +123,11 @@ export async function deleteAccount(id)
  * @param {string} currentPassword
  * @param {string} newPassword
  */
-export async function updateAccountPassword(id, currentPassword, newPassword)
+export async function updateAccountPassword(handle, currentPassword, newPassword)
 {
     const acccount = await prisma.account.findUnique(
         {   
-            where: { id: typeof id === 'string' ? Number(id) : id },
+            where: { handle_name : handle },
             select: { id: true, password_hash: true },
         });
     
@@ -197,7 +158,50 @@ export async function updateAccountPassword(id, currentPassword, newPassword)
     const newHash = await hashPassword(newPassword);
     await prisma.account.update(
     {
-        where: { id: account.id },
+        where: { handle_name: handle },
         data: { password_hash: newHash },
     });
+}
+
+/**
+ * Update account handle name if new handle is unique.
+ * @param {string} currentHandle
+ * @param {string} newHandle
+ */
+export async function updateAccountHandle(currentHandle, newHandle)
+{
+    const account = await prisma.account.findUnique(
+    {
+        where: { handle_name : currentHandle },
+        select: { id : true },
+    });
+
+    if (!acccount)
+    {
+        const err = new Error("account not found");
+        err.status = 404;
+        throw err;
+    }
+
+    const existing = await prisma.account.findUnique(
+    {
+        where: { handle_name: newHandle },
+        select: { id : true },
+    });
+    
+    if (existing)
+    {
+        const err = new Error("handle_name already exists");
+        err.status = 409;
+        throw err;
+    }
+
+    const updated = await prisma.account.update(
+    {
+        where : {id: account_id },
+        data: { handle_name : newHandle },
+        select: { id: true, handle_name: true, display_name: true, email: true, created_at: true },
+    });
+
+    return updated;
 }
