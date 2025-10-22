@@ -25,8 +25,8 @@ app.get("/", (req, res) =>
 });
 
 app.use(express.json());
-app.use('/accounts', accountRouter);
-app.use('/products', productRouter);
+app.use('/account', accountRouter);
+app.use('/product', productRouter);
 app.use('/cart', cartRouter);
 
 app.listen(process.env.PORT || 3000, () => 

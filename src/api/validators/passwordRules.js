@@ -1,16 +1,19 @@
 /**
- * Password policy:
- * - 8–64 chars; must include lowercase, uppercase, digit, and a symbol.
+ * Password policy regex pattern:
+ * - 8–64 characters
+ * - Must include lowercase letter
+ * - Must include uppercase letter  
+ * - Must include digit
+ * - Must include symbol (non-word, non-space character)
  */
 export const PASSWORD_REGEX =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,64}$/;
 
 /**
- * Validate password against policy.
- * @param {string} pwd
- * @returns {{ok: boolean, errors: string[]}}
- */  
-
+ * Validate password against security policy.
+ * @param {string} password - Password to validate
+ * @returns {{ok: boolean, errors: string[]}} Validation result with error details
+ */
 export function validatePassword(password)
 {
     const errors = [];
