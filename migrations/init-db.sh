@@ -1,1 +1,0 @@
-psql -v ON_ERROR_STOP=1 -h localhost -U postgres -d mock_store_db -f migrations/init.sql

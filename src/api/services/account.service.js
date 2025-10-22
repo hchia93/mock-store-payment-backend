@@ -6,7 +6,7 @@ export async function getAccount(handle)
 {
     if (typeof handle !== 'string' || handle.length === 0 || handle.length > 50)
     {
-        const err = new Error('service: invalid handle');
+        const err = new Error('Invalid handle');
         err.status = 400;
         throw err;
     }
@@ -27,7 +27,7 @@ export async function getAccount(handle)
 
     if (!account)
     {
-        const err = new Error('service: account not found');
+        const err = new Error('User not found');
         err.status = 404;
         throw err;
     }
@@ -49,14 +49,20 @@ export async function getAccount(handle)
  */
 export async function createAccount(input) 
 {
-    const { email, password, handle_name, display_name } = input;
+    const { email, password, handlename, displayname } = input;
     if (!email) throw new Error('email required');
-    if (!handle_name) throw new Error('handle_name required');
+    if (!handlename) throw new Error('handlename required');
+    
+    if (!displayname) 
+    {
+        console.log("displayname required");
+        throw new Error('displayname required');
+    }
 
     const policy = validatePassword(password);
     if (!policy.ok)
     {
-        const err = new Error('password invalid');
+        const err = new Error('Invalid password');
         err.details = policy.errors;
         err.status = 400;
         throw err;
@@ -64,13 +70,13 @@ export async function createAccount(input)
 
     const passwordHash = await hashPassword(password);
 
-    console.log({ email, handle_name, display_name, passwordHash });
+    console.log({ email, handlename, displayname, passwordHash });
 
     try
     {
         const acc = await prisma.account.create(
         {
-            data: { email, handle_name, display_name, password_hash:passwordHash },
+            data: { email, handle_name:handlename, display_name:displayname, password_hash:passwordHash },
             select: { id:true, email:true, handle_name:true, display_name:true, created_at:true },
         });
         return acc;
@@ -105,9 +111,21 @@ export async function deleteAccount(handle)
 {
     try
     {
+        const existing = await prisma.account.findUnique({
+            where: { handle_name: handle.trim() }
+        });
+
+        if (!existing)
+        {
+            const err = new Error(`Account '${handle}' not found`);
+            err.status = 404;
+            throw err;
+        }
+
         const result = await prisma.account.delete({
             where: { handle_name: handle.trim() }
         });
+
         console.log(">>> Prisma delete result:", result);
         return result;
     }
@@ -133,7 +151,7 @@ export async function updateAccountPassword(handle, currentPassword, newPassword
     
     if (!account)
     {
-        const err = new Error('account not found'); 
+        const err = new Error('User not found'); 
         err.Status = 404;
         throw err;
     }
@@ -141,7 +159,7 @@ export async function updateAccountPassword(handle, currentPassword, newPassword
     const ok = await verifyPassword(currentPassword, account.password_hash);
     if (!ok)
     {
-        const err = new Error('current password incorrect');
+        const err = new Error('Current password is incorrect');
         err.status = 403;
         throw err;
     }
@@ -149,7 +167,7 @@ export async function updateAccountPassword(handle, currentPassword, newPassword
     const policy = validatePassword(newPassword);
     if (!policy.ok) 
     { 
-        const err = new Error('password invalid'); 
+        const err = new Error('Invalid password'); 
         err.details = policy.errors; 
         err.status = 400; 
         throw err; 
@@ -170,37 +188,78 @@ export async function updateAccountPassword(handle, currentPassword, newPassword
  */
 export async function updateAccountHandle(currentHandle, newHandle)
 {
-    const account = await prisma.account.findUnique(
-    {
-        where: { handle_name : currentHandle },
-        select: { id : true },
+    const account = await prisma.account.findUnique({
+        where: { handle_name: currentHandle },
+        select: { id: true, handle_name: true },
     });
 
-    if (!acccount)
+
+    if (!account)
     {
-        const err = new Error("account not found");
+        const err = new Error("User not found");
         err.status = 404;
         throw err;
     }
 
-    const existing = await prisma.account.findUnique(
+    if (newHandle === currentHandle)
     {
+        const err = new Error("new handle cannot be the same as current handle");
+        err.status = 400;
+        throw err;
+    }
+
+    const existing = await prisma.account.findUnique({
         where: { handle_name: newHandle },
-        select: { id : true },
+        select: { id: true, handle_name: true },
     });
     
-    if (existing)
+    if (existing && existing.id !== account.id)
     {
-        const err = new Error("handle_name already exists");
+        const err = new Error("handle name already exists");
         err.status = 409;
         throw err;
     }
 
-    const updated = await prisma.account.update(
+    const updated = await prisma.account.update({
+        where: { id: account.id },
+        data: { handle_name: newHandle },
+        select: { id: false, handle_name: true, display_name: true, email: false, created_at: false },
+    });
+
+    return updated;
+}
+
+/**
+ * Update account display name
+ * @param {string} handle
+ * @param {string} newDisplayName
+ */
+export async function updateAccountDisplayName(handle, newDisplayName)
+{
+    const account = await prisma.account.findUnique({
+        where: { handle_name: handle },
+        select: { id: true, display_name: true },
+    });
+
+
+    if (!account)
     {
-        where : {id: account_id },
-        data: { handle_name : newHandle },
-        select: { id: true, handle_name: true, display_name: true, email: true, created_at: true },
+        const err = new Error("User not found");
+        err.status = 404;
+        throw err;
+    }
+
+    if (account.display_na === newDisplayName)
+    {
+        const err = new Error("New displayname must be different from current displayname");
+        err.status = 400;
+        throw err;
+    }
+
+    const updated = await prisma.account.update({
+        where: { id: account.id },
+        data: { display_name: newDisplayName },
+        select: { handle_name: true, display_name: true},
     });
 
     return updated;

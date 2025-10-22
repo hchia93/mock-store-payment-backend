@@ -1,5 +1,6 @@
 import accountRouter from "./routers/account.js";
-import productRouter from "./routers/product.js"
+import productRouter from "./routers/product.js";
+import cartRouter from "./routers/cart.js";
 
 import dotenv from "dotenv";
 dotenv.config(); 
@@ -26,6 +27,7 @@ app.get("/", (req, res) =>
 app.use(express.json());
 app.use('/accounts', accountRouter);
 app.use('/products', productRouter);
+app.use('/cart', cartRouter);
 
 app.listen(process.env.PORT || 3000, () => 
 {

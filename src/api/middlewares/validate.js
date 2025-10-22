@@ -36,6 +36,28 @@ export function validateAccountHandleFormat(source)
     return trimmed;
 }
 
+export function validateAccountDisplayName(source)
+{
+    const name = String(source ?? "").trim();
+
+    if (name.length === 0 || name.length > 50)
+    {
+        const err = new Error("Invalid display name length");
+        err.status = 400;
+        throw err;
+    }
+
+    // Unicode letters and numbers allowed, plus space, dot, underscore, hyphen
+    if (!/^[\p{L}\p{N}\s._-]+$/u.test(name))
+    {
+        const err = new Error("Invalid display name format");
+        err.status = 400;
+        throw err;
+    }
+
+    return name;
+}
+
 // used only when id is require to link on other db table
 export async function toAccountId(handle)
 {
